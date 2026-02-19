@@ -4,11 +4,15 @@ from dotenv import load_dotenv
 from spotipy.oauth2 import SpotifyOAuth
 import streamlit as st
 
-load_dotenv()
+# load_dotenv()
 
-CLIENT_ID = os.getenv("CLIENT_ID")
-CLIENT_SECRET = os.getenv("CLIENT_SECRET")
-REDIRECT_URI = os.getenv("REDIRECT_URI")
+# CLIENT_ID = os.getenv("CLIENT_ID")
+# CLIENT_SECRET = os.getenv("CLIENT_SECRET")
+# REDIRECT_URI = os.getenv("REDIRECT_URI")
+
+CLIENT_ID = st.secrets["CLIENT_ID"]
+CLIENT_SECRET = st.secrets["CLIENT_SECRET"]
+REDIRECT_URI = st.secrets["REDIRECT_URI"]
 
 
 sp = spotipy.Spotify(
