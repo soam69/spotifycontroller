@@ -14,15 +14,29 @@ CLIENT_ID = os.environ.get("CLIENT_ID")
 CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
 REDIRECT_URI = os.environ.get("REDIRECT_URI")
 
+if "token_info" not in st.session_state:
+    st.session_state.token_info = None
 
-sp = spotipy.Spotify(
-    auth_manager = SpotifyOAuth(
+auth_manager = SpotifyOAuth(
         client_id=CLIENT_ID,
         client_secret=CLIENT_SECRET,
         redirect_uri=REDIRECT_URI,
-        scope="user-read-private user-read-playback-state user-modify-playback-state playlist-modify-public playlist-modify-private playlist-read-private playlist-read-collaborative"
+        scope="user-read-private user-read-playback-state user-modify-playback-state playlist-modify-public playlist-modify-private playlist-read-private playlist-read-collaborative",
+        open_browser=False
     )
-)
+
+auth_url = auth_manager.get_authorize_url()
+st.markdown(f"[Login to Spotify]({auth_url})")
+
+code = st.query_params.get("code")
+if code and not st.session_state.token_info:
+    st.session_state.token_info = auth_manager.get_access_token(code)
+
+if st.session_state.token_info:
+    sp = spotipy.Spotify(auth=st.session_state.token_info["access_token"])
+else:
+    st.stop()
+
 
 
 def getIDfromLink(link : str) -> str:
